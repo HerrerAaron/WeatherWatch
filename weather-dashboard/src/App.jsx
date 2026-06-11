@@ -7,7 +7,7 @@ function MyButton() {
 export default function MyApp() {
   return(
     <div> 
-      <h1>Welcome to my app</h1>
+      <h1 className = "text-blue-500"> Weather Dashboard</h1>
       <MyButton />
     </div>
   );
