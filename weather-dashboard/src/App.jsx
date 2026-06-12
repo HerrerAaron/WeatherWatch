@@ -47,8 +47,12 @@ export default function App() {
       <Navbar />
       <div className="max-w-3xl mx-auto px-4">
 
+        {/* This is how SearchBar passes inputted city to 
+        handleSearch() in this function. */}
         <SearchBar onSearch={handleSearch} /> 
-
+      
+        {/*There is a delay between loading being true and checking
+        if city is valid */}
         {loading && (
           <p className="text-center text-gray-500 mt-6">Loading...</p>
         )}
