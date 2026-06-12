@@ -1,6 +1,6 @@
 /* 
 PURPOSE: A navigation bar to display the name of the website/project
-        and other options. For now it will just show "Weather Dashboard"
+and other options. For now it will just show "Weather Dashboard"
 */
 export default function Navbar() {
   return (
