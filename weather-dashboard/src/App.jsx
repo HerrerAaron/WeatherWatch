@@ -1,14 +1,24 @@
-function MyButton() {
-  return (
-    <button> I'm a button</button>
-  );
-}
+import Navbar from "./components/Navbar"
+import SearchBar from "./components/SearchBar"
+// import WeatherCard from "./components/WeatherCard"
+// import ForecastChart from "./components/ForecastChart"
 
-export default function MyApp() {
-  return(
-    <div> 
-      <h1 className = "text-blue-500"> Weather Dashboard</h1>
-      <MyButton />
+export default function App() {
+  return (
+    <div>
+
+      {}
+      <Navbar />
+
+      {}
+      <div className="max-w-3xl mx-auto px-4">
+        {
+        <SearchBar />
+        // <WeatherCard />
+        // <ForecastChart /> 
+        }
+      </div>
+
     </div>
-  );
+  )
 }
