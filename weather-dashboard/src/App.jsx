@@ -15,7 +15,7 @@ const fakeWeatherData = {
     { day: "Mon", high: 22, low: 14 },
     { day: "Tue", high: 19, low: 12 },
     { day: "Wed", high: 24, low: 15 },
-    { day: "Thu", high: 21, low: 13 },
+    { day: "Thu", high: 21, low: -1 },
     { day: "Fri", high: 17, low: 11 },
   ]
 }
