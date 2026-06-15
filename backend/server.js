@@ -36,20 +36,29 @@ app.get("/weather", async (req, res) => { // endpoint
         const forecast = forecastResponse.data
 
         // format forecast properly before returning to front end
-        const formattedForecast = forecast.list
-            .filter((_, index) => index % 8 === 0) // only keep 8th item (i.e. every 24 hours)
-            .map((item) => ({
-                day: new Date(item.dt * 1000).toLocaleDateString("en-US", { weekday: "short" }),
-                high: Math.round(item.main.temp_max),
-                low: Math.round(item.main.temp_min),
+        const dailyMap = {}
+        forecast.list.forEach((item) => {
+            const day = new Date(item.dt * 1000).toLocaleDateString("en-US", { weekday: "short" })
+            if (!dailyMap[day]) dailyMap[day] = { highs: [], lows: [] }
+            dailyMap[day].highs.push(item.main.temp_max)
+            dailyMap[day].lows.push(item.main.temp_min)
+        })
+
+        const formattedForecast = Object.entries(dailyMap)
+            .slice(0, 5)
+            .map(([day, { highs, lows }]) => ({
+                day,
+                high: Math.round(Math.max(...highs)),
+                low: Math.round(Math.min(...lows)),
             }))
 
         res.json({
             city: weather.name,
+            country: weather.sys.country,
             temperature: Math.round(weather.main.temp),
-            humidity: weather.wind.humidity,
-            wind: Math.round(weather.main.speed),
             condition: weather.weather[0].description,
+            humidity: weather.main.humidity,
+            wind: Math.round(weather.wind.speed),
             forecast: formattedForecast
         })
     } catch (error) {
