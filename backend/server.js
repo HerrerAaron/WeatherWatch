@@ -1,15 +1,15 @@
 /*PURPOSE: Create the server that front-end will call. Back-end fetches
 weather data using OpenWeather API.*/
 
+require("dotenv").config()
 const express = require("express")
 const axios = require("axios")
 const cors = require("cors")
-require("dotenv").config()
 
 const app = express()
 const PORT = 5000
 
-app.jse(cors())
+app.use(cors())
 app.use(express.json())
 
 app.get("/weather", async (req, res) => { // endpoint
@@ -26,10 +26,10 @@ app.get("/weather", async (req, res) => { // endpoint
 
         // get weather data from city
         const weatherResponse = await axios.get(
-            "https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric"
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
         )
         const forecastResponse = await axios.get(
-            "https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric"
+            `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`
         )
 
         const weather = weatherResponse.data
@@ -61,7 +61,4 @@ app.get("/weather", async (req, res) => { // endpoint
     }
 })
 
-// for debugging
-app.listen(PORT, () => {
-    console.log("Server running on http://localhost:${PORT}")
-})
+app.listen(PORT) // start the server
