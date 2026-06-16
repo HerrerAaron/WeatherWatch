@@ -9,7 +9,7 @@ export default function Navbar() {
         <img src="/sun.png" alt="logo" className="h-8 w-8" />
         <h1 className="text-xl font-bold tracking-wide">Weather Dashboard</h1>
       </div>
-      <p className="text-sm text-blue-200">Powered by OpenWeatherMap</p>
+      <p className="text-sm text-blue-200">Powered by OpenWeather</p>
     </nav>
   )
 }
