@@ -7,9 +7,9 @@ import ForecastChart from "./components/ForecastChart"
 
 // maps OpenWeather icon code to a page gradient and whether the bg is dark
 function getBackground(icon) {
-  if (!icon) return { gradient: "from-sky-100 to-blue-200", dark: false }
+  if (!icon) return { gradient: "from-sky-100 to-blue-200", dark: false } // default colour
   const code = icon.slice(0, 2)
-  const isNight = icon.endsWith("n")
+  const isNight = icon.endsWith("n") // openweather icons: d=day, n=night
 
   if (isNight) return { gradient: "from-slate-800 to-indigo-950", dark: true }
 
