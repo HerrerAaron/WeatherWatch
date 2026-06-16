@@ -108,8 +108,8 @@ export default function App() {
 
         {/* This is how SearchBar passes inputted city to
         handleSearch() in this function. */}
-        <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
-        <SearchHistory history={searchHistory} onSelect={handleSearch} />
+        <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} dark={dark} />
+        <SearchHistory history={searchHistory} onSelect={handleSearch} dark={dark} />
 
         {loading && (
           <p className={`text-center mt-6 ${dark ? "text-gray-300" : "text-gray-500"}`}>Loading...</p>

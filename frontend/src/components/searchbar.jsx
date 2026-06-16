@@ -4,7 +4,7 @@ PURPOSE: A search bar so the user can check the weather in cities of their choic
 
 import { useState } from "react";
 
-export default function SearchBar({ onSearch, onLocationSearch }) {
+export default function SearchBar({ onSearch, onLocationSearch, dark }) {
     const [query, setQuery] = useState("") // initial value of state is blank empty string
 
     // check if city matches city inputted by user
@@ -15,6 +15,13 @@ export default function SearchBar({ onSearch, onLocationSearch }) {
         onSearch(query)
     }
 
+    const inputClass = dark
+        ? "border border-white/30 rounded p-2 flex-1 bg-white/10 text-white placeholder-white/50"
+        : "border rounded p-2 flex-1"
+    const locationBtnClass = dark
+        ? "border border-white/50 text-white px-3 rounded hover:bg-white/20 transition"
+        : "border border-blue-600 text-blue-600 px-3 rounded hover:bg-blue-600 hover:text-white transition"
+
     return (
         <div className="flex gap-2 p-4">
             <input
@@ -23,7 +30,7 @@ export default function SearchBar({ onSearch, onLocationSearch }) {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key == "Enter" && handleSearch()}
-                className="border rounded p-2 flex-1"
+                className={inputClass}
             />
             <button
                 onClick={handleSearch}
@@ -33,7 +40,7 @@ export default function SearchBar({ onSearch, onLocationSearch }) {
             <button
                 onClick={onLocationSearch}
                 title="Use my location"
-                className="border border-blue-600 text-blue-600 px-3 rounded hover:bg-blue-600 hover:text-white transition"
+                className={locationBtnClass}
             >📍
             </button>
         </div>
