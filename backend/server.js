@@ -1,5 +1,5 @@
 /*PURPOSE: Create the server that front-end will call. Back-end fetches
-weather data using OpenWeather API.*/
+weather data using OpenWeather API.*/ 
 
 require("dotenv").config()
 const express = require("express")
@@ -52,9 +52,13 @@ app.get("/weather", async (req, res) => { // endpoint
                 low: Math.round(Math.min(...lows)),
             }))
 
+        const countryCode = weather.sys.country // country code
+        const regions = new Intl.DisplayNames(['en'], {type: 'region'})
+        const fullCountry = regions.of(countryCode) // convert to full country name
+
         res.json({
             city: weather.name,
-            country: weather.sys.country,
+            country: fullCountry,
             temperature: Math.round(weather.main.temp),
             condition: weather.weather[0].description,
             humidity: weather.main.humidity,
