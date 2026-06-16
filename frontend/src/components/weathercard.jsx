@@ -3,10 +3,10 @@ PURPOSE: Displays current weather (i.e. temperature, humidity,
 wind condition) for the searched city.
 */
 
-export default function WeatherCard({ city, country, temperature, condition, humidity, wind, icon }) {
+export default function WeatherCard({ city, province, country, temperature, condition, humidity, wind, icon }) {
     return (
         <div className="border rounded-lg p-6 m-4 shadow">
-            <h2 className="text-2xl font-bold">{city}, {country}</h2>
+            <h2 className="text-2xl font-bold">{city}{province ? `, ${province}` : ""}, {country}</h2>
             <div className="flex items-center gap-2 my-4">
                 {icon && (
                     <img

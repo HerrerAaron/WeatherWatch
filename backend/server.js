@@ -19,17 +19,29 @@ app.get("/weather", async (req, res) => { // endpoint
         return res.status(400).json({ error: "City is required." }) // 400 = bad request
     }
 
+    // normalize "City, State, Country" → "City,State,Country" for OpenWeather
+    const query = city.split(",").map((s) => s.trim()).join(",")
+
     // City is provided. Either city exists so we return weather data
     // or city doesn't exist and we provide error message
     try {
         const apiKey = process.env.OPENWEATHER_API_KEY
 
-        // get weather data from city
+        // step 1: geocode the query to lat/lon — this respects province/state codes for all countries
+        const geoResponse = await axios.get(
+            `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1&appid=${apiKey}`
+        )
+        if (!geoResponse.data.length) {
+            return res.status(404).json({ error: "City not found. Please try again." })
+        }
+        const { lat, lon, state: province } = geoResponse.data[0]
+
+        // step 2: fetch weather and forecast using coordinates
         const weatherResponse = await axios.get(
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
         )
         const forecastResponse = await axios.get(
-            `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
         )
 
         const weather = weatherResponse.data
@@ -67,6 +79,7 @@ app.get("/weather", async (req, res) => { // endpoint
 
         res.json({
             city: weather.name,
+            province: province || null, // province/state from geocoding, not always present
             country: fullCountry,
             temperature: Math.round(weather.main.temp),
             condition: weather.weather[0].description,

@@ -17,7 +17,7 @@ export default function App() {
     setWeatherData(null)
 
     try {
-      const response = await fetch(`http://localhost:5000/weather?city=${city}`) // try to get response from backend
+      const response = await fetch(`http://localhost:5000/weather?city=${encodeURIComponent(city)}`) // try to get response from backend
       const data = await response.json()
 
       if(!response.ok) { // request unsuccessful
