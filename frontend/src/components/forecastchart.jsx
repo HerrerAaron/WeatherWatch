@@ -7,9 +7,11 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLin
 // convert Celsius to Fahrenheit
 function toF(c) { return Math.round(c * 9 / 5 + 32) }
 
-export default function ForecastChart({ forecast, isCelsius }) {
+export default function ForecastChart({ forecast, isCelsius, dark }) {
+    const cardBg = dark ? "bg-white/10 border border-white/20 text-white" : "bg-white/70 border border-white/40"
+
     return (
-        <div className="p-4">
+        <div className={`rounded-lg m-4 p-4 backdrop-blur-sm ${cardBg}`}>
             <h3 className="text-lg font-semibold mb-2">5-Day Forecast</h3>
             <div className="flex justify-between">
                 {forecast.map((day) => (
@@ -21,7 +23,7 @@ export default function ForecastChart({ forecast, isCelsius }) {
                             className="bg-blue-600 rounded-full w-10 h-10"
                         />
                         <p className="text-sm font-bold">{isCelsius ? day.high : toF(day.high)}°</p>
-                        <p className="text-sm text-gray-500">{isCelsius ? day.low : toF(day.low)}°</p>
+                        <p className={`text-sm ${dark ? "text-white/60" : "text-gray-500"}`}>{isCelsius ? day.low : toF(day.low)}°</p>
                     </div>
                 ))}
             </div>

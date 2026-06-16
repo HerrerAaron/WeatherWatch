@@ -5,6 +5,28 @@ import SearchHistory from "./components/SearchHistory"
 import WeatherCard from "./components/WeatherCard"
 import ForecastChart from "./components/ForecastChart"
 
+// maps OpenWeather icon code to a page gradient and whether the bg is dark
+function getBackground(icon) {
+  if (!icon) return { gradient: "from-sky-100 to-blue-200", dark: false }
+  const code = icon.slice(0, 2)
+  const isNight = icon.endsWith("n")
+
+  if (isNight) return { gradient: "from-slate-800 to-indigo-950", dark: true }
+
+  switch (code) {
+    case "01": return { gradient: "from-yellow-200 via-orange-200 to-amber-300", dark: false } // clear
+    case "02":
+    case "03":
+    case "04": return { gradient: "from-slate-200 to-blue-300", dark: false }               // cloudy
+    case "09":
+    case "10": return { gradient: "from-slate-400 to-blue-700", dark: true }                // rain
+    case "11": return { gradient: "from-slate-600 to-purple-950", dark: true }              // thunderstorm
+    case "13": return { gradient: "from-blue-50 to-slate-200", dark: false }                // snow
+    case "50": return { gradient: "from-gray-300 to-slate-400", dark: false }               // mist
+    default:   return { gradient: "from-sky-100 to-blue-200", dark: false }
+  }
+}
+
 export default function App() {
   // variables for weather, loading, and error
   const [weatherData, setWeatherData] = useState(null)
@@ -77,22 +99,24 @@ export default function App() {
     )
   }
 
+  const { gradient, dark } = getBackground(weatherData?.icon)
+
   return (
-    <div>
+    <div className={`min-h-screen bg-linear-to-b ${gradient} transition-all duration-700`}>
       <Navbar />
       <div className="max-w-3xl mx-auto px-4">
 
-        {/* This is how SearchBar passes inputted city to 
+        {/* This is how SearchBar passes inputted city to
         handleSearch() in this function. */}
         <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
         <SearchHistory history={searchHistory} onSelect={handleSearch} />
 
         {loading && (
-          <p className="text-center text-gray-500 mt-6">Loading...</p>
+          <p className={`text-center mt-6 ${dark ? "text-gray-300" : "text-gray-500"}`}>Loading...</p>
         )}
 
         {error && (
-          <p className="text-center text-red-500 mt-6">{error}</p> 
+          <p className="text-center text-red-400 mt-6">{error}</p>
         )}
 
         {weatherData && !loading && (
@@ -100,13 +124,13 @@ export default function App() {
             <div className="flex justify-end px-4">
               <button
                 onClick={() => setIsCelsius(!isCelsius)}
-                className="text-sm px-3 py-1 rounded border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition"
+                className={`text-sm px-3 py-1 rounded border transition ${dark ? "border-white text-white hover:bg-white hover:text-slate-800" : "border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"}`}
               >
                 Switch to {isCelsius ? "°F" : "°C"}
               </button>
             </div>
-            <WeatherCard {...weatherData} isCelsius={isCelsius} />
-            <ForecastChart forecast={weatherData.forecast} isCelsius={isCelsius} />
+            <WeatherCard {...weatherData} isCelsius={isCelsius} dark={dark} />
+            <ForecastChart forecast={weatherData.forecast} isCelsius={isCelsius} dark={dark} />
           </>
         )}
 
