@@ -9,6 +9,7 @@ export default function App() {
   const [weatherData, setWeatherData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [isCelsius, setIsCelsius] = useState(true) // default is Celsius
 
   // fetch data from Express server
   async function handleSearch(city) {
@@ -53,8 +54,16 @@ export default function App() {
 
         {weatherData && !loading && (
           <>
-            <WeatherCard {...weatherData} />
-            <ForecastChart forecast={weatherData.forecast} />
+            <div className="flex justify-end px-4">
+              <button
+                onClick={() => setIsCelsius(!isCelsius)}
+                className="text-sm px-3 py-1 rounded border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition"
+              >
+                Switch to {isCelsius ? "°F" : "°C"}
+              </button>
+            </div>
+            <WeatherCard {...weatherData} isCelsius={isCelsius} />
+            <ForecastChart forecast={weatherData.forecast} isCelsius={isCelsius} />
           </>
         )}
 
