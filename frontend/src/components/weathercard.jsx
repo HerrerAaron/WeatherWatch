@@ -10,17 +10,20 @@ export default function WeatherCard({ city, province, country, temperature, cond
     const displayTemp = isCelsius ? temperature : Math.round(toF(temperature))
     const unit = isCelsius ? "°C" : "°F"
     const cardBg = dark ? "bg-white/10 border-white/20 text-white" : "bg-white/70 border-white/40"
+    const iconBg = dark ? "bg-white/20" : "bg-blue-600"
 
     return (
         <div className={`border rounded-lg p-6 m-4 shadow backdrop-blur-sm ${cardBg}`}>
             <h2 className="text-2xl font-bold">{city}{province ? `, ${province}` : ""}, {country}</h2>
             <div className="flex items-center gap-2 my-4">
                 {icon && (
-                    <img
-                    src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
-                    alt={condition}
-                    className = "w-16 h-16"
-                    />
+                    <div className={`rounded-full p-1 ${iconBg}`}>
+                        <img
+                            src={`https://openweathermap.org/img/wn/${icon}@2x.png`}
+                            alt={condition}
+                            className="w-16 h-16"
+                        />
+                    </div>
                 )}
                 <p className="text-5xl my-4">{displayTemp}{unit}</p>
             </div>
