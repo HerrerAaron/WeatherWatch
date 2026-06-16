@@ -50,6 +50,7 @@ app.get("/weather", async (req, res) => { // endpoint
                 day,
                 high: Math.round(Math.max(...highs)),
                 low: Math.round(Math.min(...lows)),
+                icon: item.weather[0].icon
             }))
 
         const countryCode = weather.sys.country // country code
@@ -63,6 +64,7 @@ app.get("/weather", async (req, res) => { // endpoint
             condition: weather.weather[0].description,
             humidity: weather.main.humidity,
             wind: Math.round(weather.wind.speed),
+            icon: weather.weather[0].icon,
             forecast: formattedForecast
         })
     } catch (error) {
