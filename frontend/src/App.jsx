@@ -11,7 +11,7 @@ export default function App() {
   const [error, setError] = useState("")
   const [isCelsius, setIsCelsius] = useState(true) // default is Celsius
 
-  // fetch data from Express server
+  // fetch weather by city name from Express server
   async function handleSearch(city) {
     setLoading(true)
     setError("")
@@ -33,6 +33,39 @@ export default function App() {
     }
   }
 
+  // fetch weather using browser geolocation
+  function handleLocationSearch() {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.")
+      return
+    }
+    setLoading(true)
+    setError("")
+    setWeatherData(null)
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const response = await fetch(`http://localhost:5000/weather?lat=${coords.latitude}&lon=${coords.longitude}`)
+          const data = await response.json()
+          if (!response.ok) {
+            setError(data.error)
+            return
+          }
+          setWeatherData(data)
+        } catch (error) {
+          setError("Could not connect to server. Please try again.")
+        } finally {
+          setLoading(false)
+        }
+      },
+      () => { // user denied or location unavailable
+        setError("Unable to retrieve your location.")
+        setLoading(false)
+      }
+    )
+  }
+
   return (
     <div>
       <Navbar />
@@ -40,7 +73,7 @@ export default function App() {
 
         {/* This is how SearchBar passes inputted city to 
         handleSearch() in this function. */}
-        <SearchBar onSearch={handleSearch} /> 
+        <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
       
         {/*There is a delay between loading being true and checking
         if city is valid */}

@@ -13,35 +13,44 @@ app.use(cors())
 app.use(express.json())
 
 app.get("/weather", async (req, res) => { // endpoint
-    const { city } = req.query
+    const { city, lat, lon } = req.query
 
-    if (!city) { // no city given
-        return res.status(400).json({ error: "City is required." }) // 400 = bad request
+    if (!city && (!lat || !lon)) { // no city or coordinates given
+        return res.status(400).json({ error: "City or coordinates are required." }) // 400 = bad request
     }
 
-    // normalize "City, State, Country" → "City,State,Country" for OpenWeather
-    const query = city.split(",").map((s) => s.trim()).join(",")
-
-    // City is provided. Either city exists so we return weather data
-    // or city doesn't exist and we provide error message
+    // City or coordinates provided. Either it exists so we return weather data
+    // or it doesn't exist and we provide error message
     try {
         const apiKey = process.env.OPENWEATHER_API_KEY
 
-        // step 1: geocode the query to lat/lon — this respects province/state codes for all countries
-        const geoResponse = await axios.get(
-            `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1&appid=${apiKey}`
-        )
-        if (!geoResponse.data.length) {
-            return res.status(404).json({ error: "City not found. Please try again." })
-        }
-        const { lat, lon, state: province } = geoResponse.data[0]
+        let coords, province = null
 
-        // step 2: fetch weather and forecast using coordinates
+        if (lat && lon) {
+            // coordinates provided directly (e.g. from browser geolocation)
+            coords = { lat, lon }
+        } else {
+            // normalize "City, State/Prov, Country" → "City,State/Prov,Country" for OpenWeather
+            const query = city.split(",").map((s) => s.trim()).join(",")
+
+            // geocode the query to lat/lon — this respects province/state codes for all countries
+            const geoResponse = await axios.get(
+                `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1&appid=${apiKey}`
+            )
+            if (!geoResponse.data.length) {
+                return res.status(404).json({ error: "City not found. Please try again." })
+            }
+            const { lat: geoLat, lon: geoLon, state: geoProvince } = geoResponse.data[0]
+            coords = { lat: geoLat, lon: geoLon }
+            province = geoProvince || null
+        }
+
+        // fetch weather and forecast using coordinates
         const weatherResponse = await axios.get(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+            `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${apiKey}&units=metric`
         )
         const forecastResponse = await axios.get(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+            `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&appid=${apiKey}&units=metric`
         )
 
         const weather = weatherResponse.data
@@ -77,6 +86,7 @@ app.get("/weather", async (req, res) => { // endpoint
         const regions = new Intl.DisplayNames(['en'], {type: 'region'})
         const fullCountry = regions.of(countryCode) // convert to full country name
 
+        // fill in json template
         res.json({
             city: weather.name,
             province: province || null, // province/state from geocoding, not always present
