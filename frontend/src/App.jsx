@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Navbar from "./components/Navbar"
 import SearchBar from "./components/SearchBar"
+import SearchHistory from "./components/SearchHistory"
 import WeatherCard from "./components/WeatherCard"
 import ForecastChart from "./components/ForecastChart"
 
@@ -10,6 +11,12 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [isCelsius, setIsCelsius] = useState(true) // default is Celsius
+  const [searchHistory, setSearchHistory] = useState([]) // last 5 searched cities
+
+  // add a query to the front of history, deduplicating and capping at 5
+  function addToHistory(query) {
+    setSearchHistory((prev) => [query, ...prev.filter((q) => q !== query)].slice(0, 5))
+  }
 
   // fetch weather by city name from Express server
   async function handleSearch(city) {
@@ -26,6 +33,7 @@ export default function App() {
         return
       }
       setWeatherData(data)
+      addToHistory(city)
     }catch(error) {
       console.log("Could not connect to server. Please try again.")
     } finally {
@@ -53,6 +61,9 @@ export default function App() {
             return
           }
           setWeatherData(data)
+          // store resolved city name so the history button re-searches by name
+          const label = [data.city, data.province, data.country].filter(Boolean).join(", ")
+          addToHistory(label)
         } catch (error) {
           setError("Could not connect to server. Please try again.")
         } finally {
@@ -74,9 +85,8 @@ export default function App() {
         {/* This is how SearchBar passes inputted city to 
         handleSearch() in this function. */}
         <SearchBar onSearch={handleSearch} onLocationSearch={handleLocationSearch} />
-      
-        {/*There is a delay between loading being true and checking
-        if city is valid */}
+        <SearchHistory history={searchHistory} onSelect={handleSearch} />
+
         {loading && (
           <p className="text-center text-gray-500 mt-6">Loading...</p>
         )}
