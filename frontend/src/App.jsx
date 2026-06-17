@@ -16,6 +16,7 @@ function getBackground(icon) {
 
   if (isNight) return { gradient: "from-slate-800 to-indigo-950", dark: true }
 
+  // change background based on weather conditions
   switch (code) {
     case "01": return { gradient: "from-yellow-200 via-orange-200 to-amber-300", dark: false } // clear
     case "02":
