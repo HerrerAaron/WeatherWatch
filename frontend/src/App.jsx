@@ -5,6 +5,9 @@ import SearchHistory from "./components/SearchHistory"
 import WeatherCard from "./components/WeatherCard"
 import ForecastChart from "./components/ForecastChart"
 
+// use VITE_API_URL for local overrides (see .env.local), otherwise hit the deployed backend
+const API_BASE = import.meta.env.VITE_API_URL || "https://weatherwatch-zly1.onrender.com"
+
 // maps OpenWeather icon code to a page gradient and whether the bg is dark
 function getBackground(icon) {
   if (!icon) return { gradient: "from-sky-100 to-blue-200", dark: false } // default colour
@@ -47,7 +50,7 @@ export default function App() {
     setWeatherData(null)
 
     try {
-      const response = await fetch(`http://localhost:5000/weather?city=${encodeURIComponent(city)}`) // try to get response from backend
+      const response = await fetch(`${API_BASE}/weather?city=${encodeURIComponent(city)}`) // try to get response from backend
       const data = await response.json()
 
       if(!response.ok) { // request unsuccessful
@@ -76,7 +79,7 @@ export default function App() {
     navigator.geolocation.getCurrentPosition(
       async ({ coords }) => {
         try {
-          const response = await fetch(`http://localhost:5000/weather?lat=${coords.latitude}&lon=${coords.longitude}`)
+          const response = await fetch(`${API_BASE}/weather?lat=${coords.latitude}&lon=${coords.longitude}`)
           const data = await response.json()
           if (!response.ok) {
             setError(data.error)
