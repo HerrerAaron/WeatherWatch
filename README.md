@@ -1,4 +1,4 @@
-# WeatherWatch 
+# <img src="frontend/public/sun.png" width="60" alt="sun"> WeatherWatch 
 
 **[Link to website](https://weather-watch-two.vercel.app/)**
 
