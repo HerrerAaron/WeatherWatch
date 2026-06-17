@@ -12,6 +12,41 @@ const PORT = 5000
 app.use(cors())
 app.use(express.json())
 
+const regions = new Intl.DisplayNames(['en'], { type: 'region' })
+
+// common state/province postal abbreviations -> full name, so "ON" resolves to "Ontario"
+// (OpenWeather's geocoder only resolves abbreviations when given as part of a strict
+// "city,state,country" query, not when the country is omitted)
+const STATE_ABBREVIATIONS = {
+    AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California", CO: "Colorado",
+    CT: "Connecticut", DE: "Delaware", FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho",
+    IL: "Illinois", IN: "Indiana", IA: "Iowa", KS: "Kansas", KY: "Kentucky", LA: "Louisiana",
+    ME: "Maine", MD: "Maryland", MA: "Massachusetts", MI: "Michigan", MN: "Minnesota",
+    MS: "Mississippi", MO: "Missouri", MT: "Montana", NE: "Nebraska", NV: "Nevada",
+    NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York", NC: "North Carolina",
+    ND: "North Dakota", OH: "Ohio", OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania",
+    RI: "Rhode Island", SC: "South Carolina", SD: "South Dakota", TN: "Tennessee", TX: "Texas",
+    UT: "Utah", VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia",
+    WI: "Wisconsin", WY: "Wyoming",
+    AB: "Alberta", BC: "British Columbia", MB: "Manitoba", NB: "New Brunswick",
+    NL: "Newfoundland and Labrador", NS: "Nova Scotia", NT: "Northwest Territories",
+    NU: "Nunavut", ON: "Ontario", PE: "Prince Edward Island", QC: "Quebec",
+    SK: "Saskatchewan", YT: "Yukon"
+}
+
+// does a typed qualifier (e.g. "ON", "Ontario", "Canada", "CA") match this geocoding candidate's
+// state or country, whether typed as a code or a full name
+function qualifierMatches(qualifier, candidate) {
+    const q = qualifier.toLowerCase()
+    const countryFull = regions.of(candidate.country) || ""
+    if (candidate.country.toLowerCase() === q) return true
+    if (countryFull.toLowerCase() === q) return true
+    if (candidate.state && candidate.state.toLowerCase() === q) return true
+    const abbrFull = STATE_ABBREVIATIONS[qualifier.toUpperCase()]
+    if (abbrFull && candidate.state && candidate.state.toLowerCase() === abbrFull.toLowerCase()) return true
+    return false
+}
+
 app.get("/weather", async (req, res) => { // endpoint
     const { city, lat, lon } = req.query
 
@@ -24,25 +59,42 @@ app.get("/weather", async (req, res) => { // endpoint
     try {
         const apiKey = process.env.OPENWEATHER_API_KEY
 
-        let coords, province = null
+        let coords, province = null, geoCity = null, geoCountry = null
 
         if (lat && lon) {
             // coordinates provided directly (e.g. from browser geolocation)
             coords = { lat, lon }
         } else {
-            // normalize "City, State/Prov, Country" → "City,State/Prov,Country" for OpenWeather
-            const query = city.split(",").map((s) => s.trim()).join(",")
+            // split "City, State/Prov, Country" into the city and any qualifiers
+            const [cityTerm, ...qualifiers] = city.split(",").map((s) => s.trim()).filter(Boolean)
 
-            // geocode the query to lat/lon — this respects province/state codes for all countries
+            // geocode by city name only — OpenWeather's own state/country parsing only works
+            // for strict "city,state,country" queries, so we fetch all same-named candidates
+            // and filter by qualifier ourselves to also support "City, State" or "City, Country"
             const geoResponse = await axios.get(
-                `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=1&appid=${apiKey}`
+                `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityTerm)}&limit=10&appid=${apiKey}`
             )
-            if (!geoResponse.data.length) {
+
+            // OpenWeather can match on a local-language name that bears no resemblance to
+            // what was typed (e.g. "m" matching Belarusian Rahachow), so only accept a
+            // result whose name is an exact (case-insensitive) match for the typed city,
+            // and whose state/country (if any were typed) match too
+            const match = geoResponse.data.find((entry) =>
+                entry.name.toLowerCase() === cityTerm.toLowerCase() &&
+                qualifiers.every((q) => qualifierMatches(q, entry))
+            )
+
+            if (!match) {
                 return res.status(404).json({ error: "City not found. Please try again." })
             }
-            const { lat: geoLat, lon: geoLon, state: geoProvince } = geoResponse.data[0]
+            const { lat: geoLat, lon: geoLon, state: geoProvince } = match
             coords = { lat: geoLat, lon: geoLon }
             province = geoProvince || null
+            // use the geocoding match's own name, not the weather endpoint's — that endpoint
+            // resolves to the nearest weather station, which is often a neighbourhood
+            // (e.g. searching "Tokyo" can come back as "Marunouchi")
+            geoCity = match.name
+            geoCountry = regions.of(match.country)
         }
 
         // fetch weather and forecast using coordinates
@@ -82,15 +134,16 @@ app.get("/weather", async (req, res) => { // endpoint
                 icon
             }))
 
-        const countryCode = weather.sys.country // country code
-        const regions = new Intl.DisplayNames(['en'], {type: 'region'})
-        const fullCountry = regions.of(countryCode) // convert to full country name
+        // prefer the geocoded city/country (from the typed search) over the weather endpoint's,
+        // which resolves to the nearest weather station and is often a neighbourhood name
+        const displayCity = geoCity || weather.name
+        const displayCountry = geoCountry || regions.of(weather.sys.country)
 
         // fill in json template
         res.json({
-            city: weather.name,
+            city: displayCity,
             province: province || null, // province/state from geocoding, not always present
-            country: fullCountry,
+            country: displayCountry,
             temperature: Math.round(weather.main.temp),
             condition: weather.weather[0].description,
             humidity: weather.main.humidity,
