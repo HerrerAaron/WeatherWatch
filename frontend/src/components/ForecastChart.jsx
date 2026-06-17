@@ -2,8 +2,6 @@
 PURPOSE: Displays 5 day forecast for city with high and low temrpetures per day.
 */
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-
 // convert Celsius to Fahrenheit
 function toF(c) { return Math.round(c * 9 / 5 + 32) }
 

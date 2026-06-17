@@ -1,6 +1,6 @@
 # WeatherWatch 
 
-🔗 **[Live Demo](https://weather-watch-two.vercel.app/)**
+**[Link to website](https://weather-watch-two.vercel.app/)**
 
 ## Features
 
@@ -21,7 +21,6 @@ A full stack weather dashboard that delivers real-time weather conditions and 5-
 **Frontend**
 - React
 - Tailwind CSS
-- Recharts
 
 **Backend**
 - Node.js
