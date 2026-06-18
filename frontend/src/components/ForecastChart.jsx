@@ -21,7 +21,7 @@ export default function ForecastChart({ forecast, isCelsius, dark }) {
                         <img
                             src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
                             alt="weather icon"
-                            className={`${iconBg} rounded-full w-10 h-10`}
+                            className={`${iconBg} rounded-full w-14 h-14`}
                         />
                         <p className="text-sm font-bold">{isCelsius ? day.high : toF(day.high)}°</p>
                         <p className={`text-sm ${dark ? "text-white/60" : "text-gray-500"}`}>{isCelsius ? day.low : toF(day.low)}°</p>
