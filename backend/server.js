@@ -114,14 +114,25 @@ app.get("/weather", async (req, res) => { // endpoint
             const date = new Date(item.dt * 1000)
             const day = date.toLocaleDateString("en-US", { weekday: "short", timeZone: "UTC" })
             const hour = date.getUTCHours()
-            if (!dailyMap[day]) dailyMap[day] = { highs: [], lows: [], icon: item.weather[0].icon, iconHour: hour }
+            const icon = item.weather[0].icon
+            const isDay = icon.endsWith("d")
+
+            if (!dailyMap[day]) dailyMap[day] = { highs: [], lows: [], icon, iconHour: hour, iconIsDay: isDay }
             dailyMap[day].highs.push(item.main.temp_max)
             dailyMap[day].lows.push(item.main.temp_min)
-            
-            // prefer the slot closest to midday so we get a daytime icon
-            if (Math.abs(hour - 12) < Math.abs(dailyMap[day].iconHour - 12)) {
-                dailyMap[day].icon = item.weather[0].icon
+
+            // always prefer a daytime icon over a night one (so the sun renders yellow,
+            // not OpenWeather's dark grey night variant), and among same day/night slots
+            // prefer the one closest to midday
+            const closerToMidday = Math.abs(hour - 12) < Math.abs(dailyMap[day].iconHour - 12)
+            const shouldReplace = isDay && !dailyMap[day].iconIsDay
+                ? true
+                : isDay === dailyMap[day].iconIsDay && closerToMidday
+
+            if (shouldReplace) {
+                dailyMap[day].icon = icon
                 dailyMap[day].iconHour = hour
+                dailyMap[day].iconIsDay = isDay
             }
         })
 
