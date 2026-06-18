@@ -1,6 +1,18 @@
 # <img src="frontend/public/sun.png" width="60" alt="sun"> WeatherWatch 
 
+> *An easy-to-use website to provide you with relevant weather details.*
+
 **[Link to website](https://weather-watch-two.vercel.app/)**
+
+## Preview
+ 
+![Screenshot](images/screenshot.png)
+ 
+*Results of current weather conditions along with 5-day forecast.*
+
+![Screenshot](images/not_found.png)
+ 
+*Results when an invalid city is inputted.*
 
 ## Features
 
@@ -9,10 +21,11 @@
 - Toggle between Celsius and Fahrenheit
 - Auto-detect weather based on your current location
 - Graceful error handling for invalid cities
+- Search history to easily go back to previously searched cities
 - Loading states during data fetching
-- Responsive design for mobile and desktop
+- Responsive design that dynamically changes with weather conditions
 
-## Overview
+## About
 
 A full stack weather dashboard that delivers real-time weather conditions and 5-day forecasts for any city in the world. Built with React on the frontend and Node.js/Express on the backend.
 

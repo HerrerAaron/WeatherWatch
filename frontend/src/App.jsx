@@ -32,7 +32,7 @@ function getBackground(icon) {
 }
 
 export default function App() {
-  // variables for weather, loading, and error
+  //states
   const [weatherData, setWeatherData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
