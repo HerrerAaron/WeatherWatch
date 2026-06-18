@@ -10,7 +10,7 @@ export default function WeatherCard({ city, province, country, temperature, cond
     const displayTemp = isCelsius ? temperature : Math.round(toF(temperature))
     const unit = isCelsius ? "°C" : "°F"
     const cardBg = dark ? "bg-white/10 border-white/20 text-white" : "bg-white/70 border-white/40"
-    const iconBg = dark ? "bg-white/20" : "bg-blue-600"
+    const iconBg = dark ? "bg-white/20" : "bg-blue-300"
 
     return (
         <div className={`border rounded-lg p-6 m-4 shadow backdrop-blur-sm ${cardBg}`}>

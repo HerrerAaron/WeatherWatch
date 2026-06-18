@@ -20,7 +20,7 @@ export default function SearchBar({ onSearch, onLocationSearch, dark }) {
         : "border rounded p-2 flex-1"
     const locationBtnClass = dark
         ? "border border-white/50 text-white px-3 rounded hover:bg-white/20 transition"
-        : "border border-blue-600 text-blue-600 px-3 rounded hover:bg-blue-600 hover:text-white transition"
+        : "border border-blue-600 text-blue-600 px-3 rounded hover:bg-blue-300 hover:text-slate-800 transition"
 
     return (
         <div className="flex gap-2 p-4">

@@ -128,7 +128,7 @@ export default function App() {
             <div className="flex justify-end px-4">
               <button
                 onClick={() => setIsCelsius(!isCelsius)}
-                className={`text-sm px-3 py-1 rounded border transition ${dark ? "border-white text-white hover:bg-white hover:text-slate-800" : "border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"}`}
+                className={`text-sm px-3 py-1 rounded border transition ${dark ? "border-white text-white hover:bg-white hover:text-slate-800" : "border-blue-600 text-blue-600 hover:bg-blue-300 hover:text-slate-800"}`}
               >
                 Switch to {isCelsius ? "°F" : "°C"}
               </button>
