@@ -59,10 +59,8 @@ Browser → React Frontend (Vercel)
          OpenWeatherMap API
 ```
 
-
-
 ## Getting Started
-You can simply use the website by clicking the link provided above or you can also run it locally. The steps to run it locally are outlined below. 
+You can simply use the website by clicking the link provided above or you can also run it locally.  
 ### Prerequisites
 - Node.js installed on your machine
 - A free OpenWeatherMap API key from [openweathermap.org](https://openweathermap.org)
@@ -130,8 +128,8 @@ The frontend is deployed on **Vercel** and the backend is deployed on **Render**
 
 ## What I'd Improve Next
 
-- Add more useful features. E.g. precipitation, sunrise/sundown, time-based forecasts
-- Ability to pin/save cities so users can quickly check weather conditions without having to search for it on first launch
+- Add more useful features (e.g. precipitation, sunrise/sunset, time-based forecasts)
+- Ability to pin/save cities so users can quickly check weather conditions without having to search for them on first launch
 
 ## Author
 **Aaron Herrera** — [GitHub](https://github.com/HerrerAaron) • [LinkedIn](https://www.linkedin.com/in/aaronherrera4/)
