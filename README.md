@@ -131,7 +131,7 @@ The frontend is deployed on **Vercel** and the backend is deployed on **Render**
 ## What I'd Improve Next
 
 - Add more useful features. E.g. precipitation, sunrise/sundown, time-based forecasts
-- Ability to pin/save cities so users can quickly check weather conditions without having to search for it on first launcgh
+- Ability to pin/save cities so users can quickly check weather conditions without having to search for it on first launch
 
 ## Author
 **Aaron Herrera** — [GitHub](https://github.com/HerrerAaron) • [LinkedIn](https://www.linkedin.com/in/aaronherrera4/)
