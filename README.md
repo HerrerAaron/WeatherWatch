@@ -25,7 +25,7 @@
 - Graceful error handling for invalid cities
 - Search history to easily go back to previously searched cities
 - Loading states during data fetching
-- Responsive design that dynamically changes with weather conditions
+- Background that changes based on weather conditions and time of day
 
 ## About
 
@@ -127,6 +127,11 @@ npm run dev
 ## Deployment
 
 The frontend is deployed on **Vercel** and the backend is deployed on **Render**. Any push to the `main` branch automatically triggers a redeployment on both platforms.
+
+## What I'd Improve Next
+
+- Add more useful features. E.g. precipitation, sunrise/sundown, time-based forecasts
+- Ability to pin/save cities so users can quickly check weather conditions without having to search for it on first launcgh
 
 ## Author
 **Aaron Herrera** — [GitHub](https://github.com/HerrerAaron) • [LinkedIn](https://www.linkedin.com/in/aaronherrera4/)
