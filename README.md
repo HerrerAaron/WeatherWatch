@@ -29,7 +29,7 @@
 
 ## About
 
-A full stack weather dashboard that delivers real-time weather conditions and 5-day forecasts for any city in the world. The purpose of this project was to practice full-stack development using popular frameworks such as React and Node.js, along with gaining experience in REST API integration and cloud deployment. 
+A full stack weather dashboard that delivers real-time weather conditions and 5-day forecasts for any city in the world. The purpose of this project was to practice full-stack development using popular technologies such as React and Node.js, along with gaining experience in REST API integration and cloud deployment. 
 
 ## Tech Stack
 
