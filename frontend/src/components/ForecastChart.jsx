@@ -1,5 +1,5 @@
 /* 
-PURPOSE: Displays 5 day forecast for city with high and low temrpetures per day.
+PURPOSE: Displays 5 day forecast for city with high and low temperatures per day.
 */
 
 // convert Celsius to Fahrenheit

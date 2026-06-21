@@ -59,6 +59,45 @@ Browser → React Frontend (Vercel)
          OpenWeatherMap API
 ```
 
+## API
+
+### `GET /weather`
+
+Returns current conditions and a 5-day forecast for a city name or a pair of coordinates.
+
+**Query Parameters**
+
+| Param | Description |
+|---|---|
+| `city` | City name, optionally qualified with state/province and/or country (e.g. `Springfield, IL, US`). Required unless `lat`/`lon` are given. |
+| `lat`, `lon` | Coordinates (e.g. from browser geolocation). Required unless `city` is given; take precedence over `city` if both are present. |
+
+**Response `200`**
+
+```json
+{
+  "city": "Winnipeg",
+  "province": "Manitoba",
+  "country": "Canada",
+  "temperature": 21,
+  "condition": "clear sky",
+  "humidity": 42,
+  "wind": 14,
+  "icon": "01d",
+  "forecast": [
+    { "day": "Mon", "high": 23, "low": 12, "icon": "01d" }
+  ]
+}
+```
+
+**Errors**
+
+| Status | Cause |
+|---|---|
+| `400` | Neither `city` nor `lat`/`lon` were provided. |
+| `404` | No city matched the given name/qualifiers. |
+| `500` | Upstream OpenWeatherMap request failed. |
+
 ## Getting Started
 You can simply use the website by clicking the link provided above or you can also run it locally.  
 ### Prerequisites

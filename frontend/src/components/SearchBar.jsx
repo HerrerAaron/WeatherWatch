@@ -7,9 +7,9 @@ import { useState } from "react";
 export default function SearchBar({ onSearch, onLocationSearch, dark }) {
     const [query, setQuery] = useState("") // initial value of state is blank empty string
 
-    // check if city matches city inputted by user
+    // ignore empty/whitespace-only queries, otherwise trigger the search
     function handleSearch() {
-        if (query.trim() === "") { // if query is not empty, call onSearch with inputted query
+        if (query.trim() === "") {
             return
         }
         onSearch(query)
